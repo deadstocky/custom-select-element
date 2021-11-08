@@ -12,6 +12,7 @@ label {
 }
 
 .custom-select-container {
+	background-color: #fff;
 	display: inline-block;
 	position: relative;
 }
