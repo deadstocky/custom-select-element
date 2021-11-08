@@ -1,19 +1,24 @@
+// rendering our own custom select element
 export default class Select {
 	constructor(element) {
 		this.element = element;
 		this.options = getFormattedOptions(element.querySelectorAll('option'));
-		this.customElementContainer = document.createElement('div');
-		this.customElementValue = document.createElement('span');
-		this.customElementOptions = document.createElement('ul');
+		this.customElementContainer = document.createElement('div'); // container for our custom select element
+		this.customElementValue = document.createElement('span'); // current value of our custom select element
+		this.customElementOptions = document.createElement('ul'); // options list of our custom select element
+
+		// using our custom select element and displaying it
 		setupCustomElement(this);
 		element.style.display = 'none'; // hide original select HTML element
 		element.after(this.customElementContainer);
 	}
 
+	// returns the selected option
 	get selectedOption() {
 		return this.options.find((option) => option.selected);
 	}
 
+	// returns the selected option's index
 	get selectedOptionIndex() {
 		return this.options.indexOf(this.selectedOption);
 	}
@@ -40,16 +45,17 @@ export default class Select {
 	}
 }
 
+// creating our custom select element
 function setupCustomElement(select) {
-	select.customElementContainer.classList.add('custom-select-container');
 	select.customElementContainer.tabIndex = 0;
-
+	select.customElementContainer.classList.add('custom-select-container');
 	select.customElementValue.classList.add('custom-select-value');
 	select.customElementValue.innerText = select.selectedOption.label;
 	select.customElementContainer.append(select.customElementValue);
 
 	select.customElementOptions.classList.add('custom-select-options');
 
+	// displaying our options list
 	select.options.forEach((option) => {
 		const optionElement = document.createElement('li');
 		optionElement.classList.add('custom-select-option');
@@ -57,6 +63,7 @@ function setupCustomElement(select) {
 		optionElement.innerText = option.label;
 		optionElement.dataset.value = option.value;
 
+		// adding event listener to each option
 		optionElement.addEventListener('click', () => {
 			select.selectValue(option.value);
 			select.customElementOptions.classList.remove('open');
@@ -86,7 +93,6 @@ function setupCustomElement(select) {
 		switch (event.code) {
 			case 'Space':
 				select.customElementOptions.classList.toggle('open');
-				select.customElementContainer.blur();
 				break;
 			case 'ArrowUp':
 				const previousOption = select.options[select.selectedOptionIndex - 1];
@@ -112,6 +118,7 @@ function setupCustomElement(select) {
 					searchString = '';
 				}, 500);
 
+				// search for the first option that starts with the search string
 				const searchOption = select.options.find((option) => {
 					return option.label.toLowerCase().startsWith(searchString);
 				});
@@ -122,6 +129,7 @@ function setupCustomElement(select) {
 	});
 }
 
+// getting our options so that we can display them in our custom select element
 function getFormattedOptions(optionElements) {
 	return [...optionElements].map((optionElement) => {
 		return {
